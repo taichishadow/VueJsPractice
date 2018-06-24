@@ -1,5 +1,6 @@
 const state = {
-  list: []
+  list: [],
+  jsonList: []
 }
 
 const mutations = {
@@ -11,6 +12,9 @@ const mutations = {
   },
   deleteList (store, val) {
     store.list.splice(store.list.indexOf(val), 1)
+  },
+  setJsonData(store, val) {
+    store.jsonList=val
   }
 }
 
@@ -23,12 +27,22 @@ const actions = {
   },
   deleteList (store, val) {
     store.commit('deleteList', val)
+  },
+  initJsonData(store){
+    fetch('http://colearning.nsysu.edu.tw:8082/v1/items/activity')
+      .then(response => response.json())
+      .then((response) => {
+        store.commit('setJsonData', response.data.items)
+      });
   }
 }
 
 const getters = {
   getList: state => {
     return state.list
+  },
+  getJsonData: state => {
+    return state.jsonList
   }
 }
 

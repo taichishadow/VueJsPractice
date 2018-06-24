@@ -14,8 +14,12 @@
           <th>圖片</th>
           <th></th>
         </tr>
-        <contentSlot v-for="(item, index) in getListAlias" v-bind:key="index" v-bind:colearning="item" v-on:editItem="subEditItem(item)" v-on:deleteItem="subDeleteItem(item)"></contentSlot>
+        <contentSlot v-for="(item, index) in getList" v-bind:key="index" v-bind:colearning="item" v-on:editItem="subEditItem(item)" v-on:deleteItem="subDeleteItem(item)"></contentSlot>
       </table>
+      <!--從API上面取得資料-->
+      <ul>
+        <li v-for="(item, index) in getJsonData" v-bind:key="index">{{item.name}}</li>
+      </ul>
     </div>
 </template>
 
@@ -25,6 +29,9 @@ import { mapGetters } from 'vuex'
 
 export default {
   components: { contentSlot },
+  mounted () {
+    this.setJsonData()
+  },
   data () {
     return {
       name: '',
@@ -34,17 +41,22 @@ export default {
         name: '',
         content: '',
         url: ''
-      }
+      },
+      jsonList: []
     }
   },
   computed: {
-    ...mapGetters({
-      getListAlias: 'getList'
-    })
+    ...mapGetters(['getList', 'getJsonData']),
+    idle(){
+      return this.getJsonData.slice(0,1);
+    },
   },
   methods: {
     insertItem () {
       this.$store.dispatch('setList', this.obj)
+    },
+    setJsonData () {
+      this.$store.dispatch('initJsonData')
     },
     addItem () {
       this.obj = {
